@@ -24,7 +24,8 @@ colPins = [23, 16, 4, 19, 18]
 # Backlight toggle
 on = -1
 
-exit = -1
+# Exit flag for the loop
+continue_running = True
 
 menu = {
     "Home": {
@@ -76,7 +77,7 @@ def update_display():
     lcd.move_to(0, menu_pos - cursor_pos)
 
 def navigate(dir):
-    global menu, menu_nav, menu_list, menu_pos, cursor_pos, exit
+    global menu, menu_nav, menu_list, menu_pos, cursor_pos, continue_running
     if dir == "d":
         if menu_pos + 1 < len(menu_list):
             menu_pos += 1
@@ -103,12 +104,11 @@ def navigate(dir):
     elif dir == "l":
         if len(menu_nav) > 1:
             menu_nav.pop()
-        else:
-            exit*=-1
-            # loop()
-        menu_pos = 0
-        cursor_pos = 0
-        update_display()
+            menu_pos = 0
+            cursor_pos = 0
+            update_display()
+        elif len(menu_nav) == 1 and menu_nav[0] == "Home":
+            continue_running = False
     return 0
 
 def home():
@@ -139,8 +139,8 @@ def default_key(r, c):
     return 0
 
 def setup():
-    global exit
-    exit=-1
+    global continue_running
+    continue_running = True
     print("Setup")
     lcd.backlight_off()
     lcd.show_cursor()
@@ -156,7 +156,8 @@ def setup():
         p.value(1)
 
 def loop():
-    while exit<0:
+    global continue_running
+    while continue_running:
         # Loop through each column
         for col in range(numCols):
             # Activate the current column
@@ -168,16 +169,15 @@ def loop():
                 
                 # If button is pressed (LOW), print the row and column
                 if buttonState == 0:
-                    # if row==0 and col==3:
-                    #     return 0
                     default_key(row, col)
                     time.sleep(0.2)  # Debounce delay
             
             # Deactivate the current column
             Pin(colPins[col], Pin.OUT).value(1)
-
+        if not continue_running:
+            break
 
 def menu_fun():
     setup()
-    # home()
+    home()
     loop()

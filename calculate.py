@@ -1,9 +1,10 @@
-from machine import Pin, I2C # type: ignore
+from machine import Pin, I2C  # type: ignore
 from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
-import utime as time # type: ignore
+import utime as time  # type: ignore
 from math import *
 from menu import menu_fun
+
 # LCD address, width, and height
 I2C_ADDR = 0x27
 I2C_NUM_ROWS = 2
@@ -133,7 +134,6 @@ def dif(expr, num):
     print(y1, y2, result)
     return result
 
-
 def sol():
     global text
     expression = text
@@ -173,7 +173,6 @@ def home():
     menu_fun()
     navigate("l")
     navigate("r")
-
     return 0
 
 def power_on():
@@ -301,7 +300,6 @@ def setup():
         p.value(1)
 
 def loop():
-    global loop_val
     while True:
         # Loop through each column
         for col in range(numCols):
@@ -314,13 +312,12 @@ def loop():
                 
                 # If button is pressed (LOW), print the row and column
                 if buttonState == 0:
-
                     default_key(row, col)
                     time.sleep(0.2)  # Debounce delay
             
             # Deactivate the current column
             Pin(colPins[col], Pin.OUT).value(1)
-def cal_fun():
 
+def cal_fun():
     setup()
     loop()

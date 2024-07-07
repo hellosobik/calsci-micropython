@@ -1,7 +1,4 @@
 from calculate import cal_fun
 
-# cal_fun()
-
-
+# Call the main calculation function
 cal_fun()
-print("menu")
