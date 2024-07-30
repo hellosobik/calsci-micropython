@@ -19,8 +19,12 @@ numRows = 8  # Number of rows
 numCols = 5  # Number of columns
 
 # Define the pins for rows and columns
-rowPins = [13, 12, 14, 26, 25, 5, 17, 15]
-colPins = [23, 16, 4, 19, 18]
+# rowPins = [13, 12, 14, 26, 25, 5, 17, 15]
+# colPins = [23, 16, 4, 19, 18]
+
+rowPins = [32, 33, 25, 26, 27, 13, 12, 14]
+colPins = [34, 16, 17, 4, 35]
+
 
 # Backlight toggle
 on = -1
@@ -291,24 +295,30 @@ def setup():
     lcd.clear()
     
     # Set row pins as INPUT_PULLUP
-    for pin in rowPins:
+    for pin in colPins:
         Pin(pin, Pin.IN, Pin.PULL_UP)
     
     # Set column pins as OUTPUT and HIGH
-    for pin in colPins:
+    for pin in rowPins:
         p = Pin(pin, Pin.OUT)
         p.value(1)
 
 def loop():
+    global numRows, rowPins, numCols, colPins
     while True:
         # Loop through each column
-        for col in range(numCols):
+        # for col in range(numCols):
+        for row in range(numRows):
             # Activate the current column
-            Pin(colPins[col], Pin.OUT).value(0)
+            # Pin(colPins[col], Pin.OUT).value(0)
+            Pin(rowPins[row], Pin.OUT).value(0)
+            
             
             # Check each row in the current column
-            for row in range(numRows):
-                buttonState = Pin(rowPins[row], Pin.IN, Pin.PULL_UP).value()
+            # for row in range(numRows):
+            for col in range(numCols):
+                # buttonState = Pin(rowPins[row], Pin.IN, Pin.PULL_UP).value()
+                buttonState = Pin(colPins[col], Pin.IN, Pin.PULL_UP).value()
                 
                 # If button is pressed (LOW), print the row and column
                 if buttonState == 0:
@@ -316,7 +326,9 @@ def loop():
                     time.sleep(0.2)  # Debounce delay
             
             # Deactivate the current column
-            Pin(colPins[col], Pin.OUT).value(1)
+            # Pin(colPins[col], Pin.OUT).value(1)
+            Pin(rowPins[row], Pin.OUT).value(1)
+
 
 def cal_fun():
     setup()

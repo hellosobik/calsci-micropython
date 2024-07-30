@@ -20,7 +20,8 @@ numCols = 5  # Number of columns
 # Define the pins for rows and columns
 rowPins = [13, 12, 14, 26, 25, 5, 17, 15]
 colPins = [23, 16, 4, 19, 18]
-
+# rowPins = [13, 4, 25, 26, 27, 34, 35, 32]
+# colPins = [32, 17, 16, 14, 33]
 # Backlight toggle
 on = -1
 
