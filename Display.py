@@ -1,0 +1,2 @@
+class display_objects:
+    
