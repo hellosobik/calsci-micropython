@@ -40,11 +40,14 @@ class MenuItem:
             self.value = self.options[index]
 
 class DisplayBuffer:
-    def __init__(self):
+    def __init__(self, rows=None):
         self.buffer = []
         self.cursor_position = 0
+        self.rows = list(range(0,len(self.buffer))) if rows == None else list(range(0,rows))
+        # self.direction=None
 
     def update_buffer(self, menu_items, cursor_position):
+        self.cursor_position=cursor_position
         self.buffer = []
         for i, item in enumerate(menu_items):
             if i == cursor_position:
@@ -59,13 +62,33 @@ class DisplayBuffer:
         for line in self.buffer:
             print(line)
         print("\nEnd of Buffer\n")
+    
+    def display_calsci(self, direction):
+        if direction=="down":
+            if self.cursor_position>self.rows[-1]:
+                print(self.rows)
+                self.rows=self.rows[::-1]
+                self.rows.pop()
+                print(self.rows)
+                self.rows=self.rows[::-1]
+                self.rows.append(self.cursor_position)
+        
+
+        elif direction=="up":
+            if self.cursor_position<self.rows[0]:
+                self.rows=self.rows.pop()
+                self.rows=self.rows[::-1].append(self.cursor_position)
+                self.rows=self.rows[::-1]
+        print(self.rows, self.cursor_position)
+
 
 class Menu:
     def __init__(self):
         self.menu_stack = []
         self.current_menu = []
         self.cursor_position = 0
-        self.display_buffer = DisplayBuffer()
+        self.display_buffer = DisplayBuffer(rows=3)
+        self.direction=None
 
     def add_menu_item(self, menu_item):
         self.current_menu.append(menu_item)
@@ -85,6 +108,7 @@ class Menu:
     def move_cursor_down(self):
         if self.cursor_position < len(self.current_menu) - 1:
             self.cursor_position += 1
+            self.direction="down"
         else:
             self.cursor_position = 0  # Wrap to the top
         self.update_display()
@@ -92,6 +116,7 @@ class Menu:
     def move_cursor_up(self):
         if self.cursor_position > 0:
             self.cursor_position -= 1
+            self.direction="up"
         else:
             self.cursor_position = len(self.current_menu) - 1  # Wrap to the bottom
         self.update_display()
@@ -124,6 +149,8 @@ class Menu:
     def update_display(self):
         self.display_buffer.update_buffer(self.current_menu, self.cursor_position)
         self.display_buffer.display()
+        self.display_buffer.display_calsci(self.direction)
+
 
 # Example usage
 menu = Menu()
