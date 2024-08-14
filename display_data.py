@@ -44,10 +44,12 @@ class DisplayBuffer:
         self.buffer = []
         self.cursor_position = 0
         self.rows = list(range(0,len(self.buffer))) if rows == None else list(range(0,rows))
-        # self.direction=None
+        self.direction=None
+        self.total_items=0
 
-    def update_buffer(self, menu_items, cursor_position):
+    def update_buffer(self, menu_items, cursor_position, total_items):
         self.cursor_position=cursor_position
+        self.total_items=total_items
         self.buffer = []
         for i, item in enumerate(menu_items):
             if i == cursor_position:
@@ -66,32 +68,62 @@ class DisplayBuffer:
     def display_calsci(self, direction):
         if direction=="down":
             if self.cursor_position>self.rows[-1]:
-                print(self.rows)
+                # print(self.rows)
                 self.rows=self.rows[::-1]
                 self.rows.pop()
-                print(self.rows)
+                # print(self.rows)
                 self.rows=self.rows[::-1]
                 self.rows.append(self.cursor_position)
+            elif self.cursor_position==0:
+                self.rows=list(range(0,len(self.rows)))
+            print(self.rows, self.cursor_position)
+            return 0
         
 
-        elif direction=="up":
+        if direction=="up" and self.cursor_position<self.rows[0]:
             if self.cursor_position<self.rows[0]:
-                self.rows=self.rows.pop()
-                self.rows=self.rows[::-1].append(self.cursor_position)
+                self.rows.pop()
                 self.rows=self.rows[::-1]
+                self.rows.append(self.cursor_position)
+                self.rows=self.rows[::-1]
+                print(self.rows, self.cursor_position)
+                return 0
+            # if self.cursor_position > self.rows[-1]:
+            #     self.rows=list(range(len(self.buffer)-len(self.rows), len(self.buffer)))
+
+                # self.rows=self.rows[len(self.buffer)-len(self.rows):len(self.buffer)]
+        if self.cursor_position > self.rows[-1] and direction=="up":
+        # if self.cursor_position == self.total_items and direction=="up":
+            self.rows=list(range(self.total_items-len(self.rows), self.total_items))
+            # self.rows=list(range(len(self.buffer)-len(self.rows), len(self.buffer)))
+
+            print(self.rows, self.cursor_position)
+            return 0
+        # if direction=="up":
+        #     self.rows=list(range(self.total_items-len(self.rows), self.total_items))
+        #     print(self.rows, self.cursor_position)
+        #     return 0
+        if self.rows==list(range(0,len(self.rows))) and self.cursor_position==self.total_items-1:
+
+            self.rows=list(range(self.total_items-len(self.rows), self.total_items))
+            return 0
         print(self.rows, self.cursor_position)
+        # menu.move_cursor_up()
+        # from display_data import *
 
 
 class Menu:
-    def __init__(self):
+    def __init__(self, rows=2):
         self.menu_stack = []
         self.current_menu = []
         self.cursor_position = 0
-        self.display_buffer = DisplayBuffer(rows=3)
+        self.display_buffer = DisplayBuffer(rows=rows)
         self.direction=None
+        self.total_items=0
 
     def add_menu_item(self, menu_item):
         self.current_menu.append(menu_item)
+        self.total_items+=1
 
     def enter_sub_menu(self):
         if self.current_menu[self.cursor_position].is_sub_menu():
@@ -108,17 +140,20 @@ class Menu:
     def move_cursor_down(self):
         if self.cursor_position < len(self.current_menu) - 1:
             self.cursor_position += 1
-            self.direction="down"
+            # self.direction="down"
         else:
             self.cursor_position = 0  # Wrap to the top
+        self.direction="down"
         self.update_display()
 
     def move_cursor_up(self):
         if self.cursor_position > 0:
             self.cursor_position -= 1
-            self.direction="up"
+            # self.direction="up"
         else:
             self.cursor_position = len(self.current_menu) - 1  # Wrap to the bottom
+        self.direction="up"
+
         self.update_display()
 
     def select_item(self):
@@ -147,34 +182,36 @@ class Menu:
                     self.go_back()
 
     def update_display(self):
-        self.display_buffer.update_buffer(self.current_menu, self.cursor_position)
+        self.display_buffer.update_buffer(self.current_menu, self.cursor_position, total_items=self.total_items)
         self.display_buffer.display()
         self.display_buffer.display_calsci(self.direction)
 
 
 # Example usage
-menu = Menu()
+menu = Menu(rows=3)
 menu.add_menu_item(MenuItem("Item 1", sub_menu=[MenuItem("Subitem 1", sub_menu=[MenuItem("deep1"), MenuItem("deep2")]), MenuItem("Subitem 2")]))
 menu.add_menu_item(MenuItem("Item 2", data_type="int", value=42))
-menu.add_menu_item(MenuItem("Text Input Item", data_type="text"))
+menu.add_menu_item(MenuItem("Text Input Item 3", data_type="text"))
 
 toggle_sub_menu = [MenuItem(f"Option {i+1}") for i in range(5)]
-toggle_item = MenuItem("Toggle Option", data_type="toggle", value="Option 1", options=["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"], sub_menu=toggle_sub_menu)
+toggle_item = MenuItem("Toggle Option 4", data_type="toggle", value="Option 1", options=["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"], sub_menu=toggle_sub_menu)
 menu.add_menu_item(toggle_item)
 
-menu.add_menu_item(MenuItem("Item 3", action=lambda: print("Action performed")))
+menu.add_menu_item(MenuItem("Item 5", action=lambda: print("Action performed")))
+menu.add_menu_item(MenuItem("Item 6", data_type="int", value=42))
+menu.add_menu_item(MenuItem("Item 7", data_type="int", value=42))
 
 menu.update_display()
 
 # Simulate user interaction
-menu.move_cursor_down()  # Move to Item 2
-menu.select_item()       # Edit the integer value of Item 2
-menu.move_cursor_down()  # Move to Text Input Item
-menu.select_item()       # Input text for Text Input Item
-menu.move_cursor_down()  # Move to Toggle Option
-menu.select_item()       # Enter the toggle submenu to select an option
-menu.move_cursor_down()  # Navigate within the toggle options
-menu.select_item()       # Select an option within the toggle submenu
-menu.go_back()           # Go back to the main menu
-menu.move_cursor_down()  # Move to Item 3
-menu.select_item()       # Perform the action for Item 3
+# menu.move_cursor_down()  # Move to Item 2
+# menu.select_item()       # Edit the integer value of Item 2
+# menu.move_cursor_down()  # Move to Text Input Item
+# menu.select_item()       # Input text for Text Input Item
+# menu.move_cursor_down()  # Move to Toggle Option
+# menu.select_item()       # Enter the toggle submenu to select an option
+# menu.move_cursor_down()  # Navigate within the toggle options
+# menu.select_item()       # Select an option within the toggle submenu
+# menu.go_back()           # Go back to the main menu
+# menu.move_cursor_down()  # Move to Item 3
+# menu.select_item()       # Perform the action for Item 3
