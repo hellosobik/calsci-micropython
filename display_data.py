@@ -143,6 +143,7 @@ class Menu:
     def go_back(self):
         if self.menu_stack:
             self.current_menu, self.cursor_position = self.menu_stack.pop()
+            self.total_items=len(self.current_menu)
             self.update_display()
 
     def move_cursor_down(self):
