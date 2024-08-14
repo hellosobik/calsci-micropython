@@ -110,6 +110,7 @@ class DisplayBuffer:
         print(self.rows, self.cursor_position)
         # menu.move_cursor_up()
         # from display_data import *
+        # menu.select_item()
 
 
 class Menu:
@@ -117,9 +118,11 @@ class Menu:
         self.menu_stack = []
         self.current_menu = []
         self.cursor_position = 0
-        self.display_buffer = DisplayBuffer(rows=rows)
+        # self.display_buffer = DisplayBuffer(rows=rows)
         self.direction=None
         self.total_items=0
+        self.no_rows=rows
+        self.display_buffer = DisplayBuffer(rows=self.no_rows)
 
     def add_menu_item(self, menu_item):
         self.current_menu.append(menu_item)
@@ -130,6 +133,11 @@ class Menu:
             self.menu_stack.append((self.current_menu, self.cursor_position))
             self.current_menu = self.current_menu[self.cursor_position].sub_menu
             self.cursor_position = 0
+            self.total_items=len(self.current_menu)
+            # if len(self.current_menu)<=self.no_rows:
+            #     self.no_rows=len(self.current_menu)
+            #     self.display_buffer = DisplayBuffer(rows=self.no_rows)
+
             self.update_display()
 
     def go_back(self):
@@ -173,6 +181,7 @@ class Menu:
             current_item.update_value(new_value)
             self.update_display()
         elif current_item.is_toggle():
+            # self.total_items=
             self.enter_sub_menu()
         else:
             if self.menu_stack and self.menu_stack[-1]:  # Check if menu_stack is non-empty
