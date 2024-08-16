@@ -1,9 +1,10 @@
 import os
 
 # menu_buffer=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]
-menu_buffer=list(range(60))
+menu_buffer_size=60
+menu_buffer=list(range(menu_buffer_size))
 # menu_buffer=["angle", "fun", "consts", "equations", "search", "cloud", "wifi", "settings"]
-menu_buffer_cursor=5
+menu_buffer_cursor=0
 rows=5
 cols=6
 display_buffer_position=0
@@ -37,8 +38,8 @@ while True:
 
 
     print("")
-    direction=input("Enter the direction: ")
-    if direction=="d":
+    text=input("Enter the text: ")
+    if text=="d":
         menu_buffer_cursor+=cols
         if menu_buffer_cursor >= len(menu_buffer):
             # menu_buffer_cursor=0
@@ -56,7 +57,7 @@ while True:
             display_buffer_position+=cols
         display_buffer=menu_buffer[display_buffer_position:display_buffer_position+rows*cols]
 
-    elif direction=="u":
+    elif text=="u":
         menu_buffer_cursor-=cols
         if menu_buffer_cursor <0:
             display_buffer_cursor=len(display_buffer)+menu_buffer_cursor
@@ -68,7 +69,7 @@ while True:
             display_buffer_position-=cols
         display_buffer=menu_buffer[display_buffer_position:display_buffer_position+rows*cols]
     
-    elif direction=="r":
+    elif text=="r":
         menu_buffer_cursor+=1
         if menu_buffer_cursor>=len(menu_buffer):
             display_buffer_cursor=(menu_buffer_cursor-len(menu_buffer))%cols
@@ -79,7 +80,7 @@ while True:
             # display_buffer_cursor
         display_buffer=menu_buffer[display_buffer_position:display_buffer_position+rows*cols]
 
-    elif direction=="l":
+    elif text=="l":
         menu_buffer_cursor-=1
         if menu_buffer_cursor<0:
             display_buffer_cursor=len(display_buffer)+menu_buffer_cursor
@@ -89,6 +90,17 @@ while True:
             display_buffer_position-=cols
             # display_buffer_cursor
         display_buffer=menu_buffer[display_buffer_position:display_buffer_position+rows*cols]
+    
+    else:
+        menu_buffer_size+=len(text)
+        menu_buffer=list(range(menu_buffer_size))
+        menu_buffer_cursor+=len(text)
+        if menu_buffer_cursor>display_buffer[-1]:
+            # display_buffer_position=((menu_buffer_cursor)//(rows*cols-1))*(rows*cols)
+            display_buffer_position=menu_buffer_cursor-menu_buffer_cursor%cols-((rows-1)*cols)
+        display_buffer=menu_buffer[display_buffer_position:display_buffer_position+rows*cols]
+
+
         
 
 
