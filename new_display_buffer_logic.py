@@ -6,8 +6,8 @@ menu_buffer_size=len(text_buffer)
 menu_buffer=list(range(menu_buffer_size))
 # menu_buffer=["angle", "fun", "consts", "equations", "search", "cloud", "wifi", "settings"]
 menu_buffer_cursor=0
-rows=5
-cols=4
+rows=3
+cols=10
 display_buffer_position=0
 display_buffer=menu_buffer[display_buffer_position:display_buffer_position+rows*cols]
 # display_buffer_cursor=0
@@ -38,7 +38,7 @@ while True:
             if counter >= len(display_buffer):
                 row+="\t"
             elif display_buffer[counter]==menu_buffer_cursor:
-                row+=" >"+str(text_buffer[display_buffer[counter]])
+                row+="  "+str(text_buffer[display_buffer[counter]])+"|"
                 # row+=" >"+str(text_buffer[counter])
             else:
                 row+="  "+str(text_buffer[display_buffer[counter]])
@@ -51,14 +51,14 @@ while True:
     text=input("Enter the text: ")
     if text=="d":
         menu_buffer_cursor+=cols
-        if menu_buffer_cursor >= len(menu_buffer):
-            # menu_buffer_cursor=0
-            # display_buffer_position=0
-            # display_buffer_cursor=0
+        if menu_buffer_cursor >= len(menu_buffer)-no_last_spaces:
+            menu_buffer_cursor=0
+            display_buffer_position=0
+            display_buffer_cursor=0
 
             # display_buffer_cursor=(menu_buffer_cursor-len(menu_buffer))%cols
-            display_buffer_position=(menu_buffer_cursor-len(menu_buffer))//cols
-            menu_buffer_cursor=menu_buffer_cursor-len(menu_buffer)
+            # display_buffer_position=(menu_buffer_cursor-len(menu_buffer))//cols
+            # menu_buffer_cursor=menu_buffer_cursor-len(menu_buffer)
 
         # elif menu_buffer_cursor <= display_buffer[-1]:
         #     # display_buffer_cursor+=cols
