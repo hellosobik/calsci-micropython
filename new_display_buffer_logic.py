@@ -7,7 +7,7 @@ menu_buffer=list(range(menu_buffer_size))
 # menu_buffer=["angle", "fun", "consts", "equations", "search", "cloud", "wifi", "settings"]
 menu_buffer_cursor=0
 rows=3
-cols=10
+cols=12
 display_buffer_position=0
 display_buffer=menu_buffer[display_buffer_position:display_buffer_position+rows*cols]
 # display_buffer_cursor=0
@@ -71,7 +71,8 @@ while True:
         menu_buffer_cursor-=cols
         if menu_buffer_cursor <0:
             display_buffer_cursor=len(display_buffer)+menu_buffer_cursor
-            menu_buffer_cursor=len(menu_buffer)+menu_buffer_cursor
+            # menu_buffer_cursor=len(menu_buffer)+menu_buffer_cursor
+            menu_buffer_cursor=len(menu_buffer)-1
             if menu_buffer_cursor>=len(menu_buffer)-no_last_spaces:
                 menu_buffer_cursor=len(menu_buffer)-no_last_spaces-1
             # menu_buffer_cursor=len(menu_buffer)-1
