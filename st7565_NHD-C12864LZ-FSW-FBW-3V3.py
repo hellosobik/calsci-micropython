@@ -305,8 +305,8 @@ def plot_function(fb, func, x_min, x_max, y_min, y_max, width, height):
     - height: The height of the display in pixels
     """
     # Scale factors to map function values to the display's pixel coordinates
-    x_scale = (x_max - x_min) /(width/3)
-    y_scale = (y_max - y_min) / (height/3)
+    x_scale = (x_max - x_min) /(width)
+    y_scale = (y_max - y_min) / (height)
 
     # Loop through each x pixel
     for x_pixel in range(width):
@@ -340,18 +340,20 @@ def plot_function(fb, func, x_min, x_max, y_min, y_max, width, height):
 # fb.fill(0)
 
 def polynom(x):
-    y=math.sin(x)
+    # y=math.sin(x)
+    y=x**2-2*x-2
     return y
 # x=0
 # y=x**2
-# fb.line(0,31,127,31, 1)
-# fb.line(63,0,63,63)
-for i in range(0,8):
-    y=63-i**2
-    fb.pixel(i, y, 1)
-fb.fill(0)
+fb.line(0,31,127,31, 1)
+fb.line(63,0,63,63,1)
+# for i in range(0,8):
+#     y=63-i**2
+#     fb.pixel(i, y, 1)
+# fb.fill(0)
 
-plot_function(fb, polynom, 0, 2, -1, 1, 128, 64)
+# plot_function(fb, polynom, 0, 2*math.pi, -1, 1, 128, 64)
+plot_function(fb, polynom, -10, 10, -5, 5, 128, 64)
 
 print("")
 print("")
