@@ -183,7 +183,101 @@ for pin in colPins:
 for pin in rowPins:
     p = Pin(pin, Pin.OUT)
     p.value(1)
-def loop(txt="Hello world", r=0):
+
+
+def default_key(r, c):
+    if r == 0:
+        if c == 0:
+            return ""
+        elif c == 1:
+            return ""
+        elif c == 2:
+            return "nav_u"
+        elif c == 3:
+            return ""
+        elif c == 4:
+            return ""
+    elif r == 1:
+        if c == 0:
+            return ""
+        elif c == 1:
+            return "nav_l"
+        elif c == 2:
+            return ""
+        elif c == 3:
+            return "nav_r"
+        elif c == 4:
+            return ""
+    elif r == 2:
+        if c == 0:
+            return ""
+        elif c == 1:
+            return ""
+        elif c == 2:
+            return "nav_d"
+        elif c == 3:
+            return "("
+        elif c == 4:
+            return ")"
+    elif r == 3:
+        if c == 0:
+            return "pow( , "
+        elif c == 1:
+            return "sin("
+        elif c == 2:
+            return "cos("
+        elif c == 3:
+            return "tan("
+        elif c == 4:
+            return "log("
+    elif r == 4:
+        if c == 0:
+            return "7"
+        elif c == 1:
+            return "8"
+        elif c == 2:
+            return "9"
+        elif c == 3:
+            return "nav_b"
+        elif c == 4:
+            return ""
+    elif r == 5:
+        if c == 0:
+            return "4"
+        elif c == 1:
+            return "5"
+        elif c == 2:
+            return "6"
+        elif c == 3:
+            return "*"
+        elif c == 4:
+            return "/"
+    elif r == 6:
+        if c == 0:
+            return "1"
+        elif c == 1:
+            return "2"
+        elif c == 2:
+            return "3"
+        elif c == 3:
+            return "+"
+        elif c == 4:
+            return "-"
+    elif r == 7:
+        if c == 0:
+            return "."
+        elif c == 1:
+            return "0"
+        elif c == 2:
+            return "pow(10, "
+        elif c == 3:
+            return ""
+        elif c == 4:
+            return ""
+    return 0
+
+
+def loop():
     
     global numRows, rowPins, numCols, colPins, graph_letters
     while True:
@@ -203,21 +297,21 @@ def loop(txt="Hello world", r=0):
                 
                 # If button is pressed (LOW), print the row and column
                 if buttonState == 0:
-                    # default_key(row, col)
-                    print("row= ",row, " ", "col= ",col)
-                    str_pnt="R"+str(row)+"C"+str(col)
-                    set_page_address(r)
-                    set_column_address(0)
-                    for i in txt:
-                        write_data(0b00000000)
-                        for j in graph_letters[i]:
+                    str=default_key(row, col)
+                    # print("row= ",row, " ", "col= ",col)
+                    # str_pnt="R"+str(row)+"C"+str(col)
+                    # set_page_address(r)
+                    # set_column_address(0)
+                    # for i in txt:
+                    #     write_data(0b00000000)
+                    #     for j in graph_letters[i]:
                             
-                            write_data(j)
-                            
-                    
-                    time.sleep(0.2)  # Debounce delay
+                    #         write_data(j)
+                    # time.sleep(0.1) 
+                    # return str
+                    time.sleep(0.01)  # Debounce delay
                     Pin(rowPins[row], Pin.OUT).value(1)
-                    return 0
+                    return str
                     # write_data(0b00000000)
             
             # Deactivate the current column
@@ -231,7 +325,7 @@ def loop(txt="Hello world", r=0):
 
 
 # import os
-import sys
+# import sys
 
 # def clear():
 
@@ -291,10 +385,11 @@ while True:
         for k in range(8):
             write_data(0b00000000)
 
-    print("")
-    text=input("Enter the text: ")
-    if text=="d" or text =="r":
-        if text=="d":
+    # print("")
+    # text=input("Enter the text: ")
+    text=loop()
+    if text=="nav_d" or text =="nav_r":
+        if text=="nav_d":
             menu_buffer_cursor+=cols
         else:
             menu_buffer_cursor+=1
@@ -303,8 +398,8 @@ while True:
             display_buffer_position=0
         elif menu_buffer_cursor > display_buffer[-1]:
             display_buffer_position+=cols
-    elif text=="u" or text=="l":
-        if text=="u":
+    elif text=="nav_u" or text=="nav_l":
+        if text=="nav_u":
             menu_buffer_cursor-=cols
         else:
             menu_buffer_cursor-=1
@@ -313,7 +408,7 @@ while True:
             display_buffer_position=len(menu_buffer)-rows*cols
         elif menu_buffer_cursor < display_buffer[0]:
             display_buffer_position-=cols
-    elif text=="b":
+    elif text=="nav_b":
         if menu_buffer_cursor < 0:
             menu_buffer_cursor=0
             display_buffer_position=0
